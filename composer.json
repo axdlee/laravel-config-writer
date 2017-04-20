@@ -1,0 +1,20 @@
+{
+    "name": "axdlee/laravel-config-writer",
+    "description": "Write to Laravel Config files and maintain file integrity. Support Laravel 5.3+",
+    "homepage": "http://xdlee.com",
+    "require": {
+        "illuminate/config": "^5.3"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "axdlee",
+            "email": "xdlee110@gmail.com"
+        }
+    ],
+    "autoload": {
+      "psr-4": {
+        "Axdlee\\Config\\": "src/"
+      }
+    }
+}
