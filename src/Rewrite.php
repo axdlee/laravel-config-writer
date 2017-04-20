@@ -93,7 +93,11 @@ class Rewrite
         $patterns[] = $this->buildArrayExpression($key, $items);
 
         foreach ($patterns as $pattern) {
-            $result = preg_replace($pattern, '${1}${2}'.$replaceValue, $result, 1, $count);
+            if (is_array($value)) {
+                $result = preg_replace($pattern, '${1}${2}'.$this->array2str($value), $result, 1, $count);
+            } else {
+                $result = preg_replace($pattern, '${1}${2}'.$replaceValue, $result, 1, $count);
+            }
 
             if ($count > 0) {
                 break;
@@ -101,13 +105,30 @@ class Rewrite
         }
 
         if ($count == 0) {
-            echo $replaceValue;
-            $result = preg_replace('/(\s*)]\;/', "\n\n\t'{$key}' => ".$replaceValue.',${0}', $result, 1, $count);
+            if (is_array($value)) {
+                $result = preg_replace('/(\s*)]\;/', "\n\n\t'{$key}' => ".$this->array2str($value).',${0}', $result, 1, $count);
+            } else {
+                $result = preg_replace('/(\s*)]\;/', "\n\n\t'{$key}' => ".$replaceValue.',${0}', $result, 1, $count);
+            }
         }
 
         return $result;
     }
 
+    protected function array2str ($data)
+    {
+        $str = '';
+        foreach ($data as $k => $v) {
+            if (is_array($v)) {
+                $v = self::array2str($v);
+                $str .= "\n\t\t'" . $k . "'" . ' => ' .  $v . ",";
+            } else {
+                $str .= "\n\t\t'" . $k . "'" . ' => ' . "'" . $v . "',";
+            }
+
+        }
+        return "[".$str."\n\t]";
+    }
     protected function writeValueToPhp($value)
     {
         if (is_string($value) && strpos($value, "'") === false) {
