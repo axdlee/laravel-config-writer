@@ -33,7 +33,11 @@ class ConfigServiceProvider extends ServiceProvider
         $config_items = app('config')->all();
         $this->app->singleton('config', function($app) use ($config_items)
         {
-            return $app->makeWith('Axdlee\Config\Repository', $config_items);
+            if (version_compare($app::VERSION,'5.4.0','<')) {
+                return $app->make('Axdlee\Config\Repository', $config_items);
+            } else {
+                return $app->makeWith('Axdlee\Config\Repository', $config_items);
+            }
         });
     }
 }
